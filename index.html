@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <style> 
+            div{
+                text-align: center;
+            }
+            table{
+                
+                margin: 1em auto;
+                border: solid 1px black;
+            }
+            tr:last-child > td{
+                border: solid 1px black;
+            } 
+        </style>
+        <div>
+            <h2>Rock, Paper, Scissors</h2>
+            <button id="play">Play</button>
+            <table>
+                <tr>
+                    <td>User Score</td>
+                    <td>Comp Score</td>
+                </tr>
+                <tr>
+                    <td class="userScore"></td>
+                    <td class="compScore"></td>
+                </tr>
+                
+            </table>
+            <p class="final"></p>
+            
+            <div class="log">
+                <p><strong>Log:</strong></p>
+                <div></div>
+
+            </div>
+        </div>
+        
+        <script>
+            
+            const ROUNDS = 3;
+            function playerSelection(){
+                let res;
+                while(true){
+                    res = prompt("Pick one: rock, paper, scissors", '').toLowerCase();
+                    if (res == "rock" || res =="paper" || res=="scissors"){
+                        return res;
+                        break;
+                    }
+                    else{ alert("invalid: try again")}
+                }
+            }
+            
+            function computerPlay(){
+                let rand = Math.random() * 10 % 3;
+                rand = Math.round(rand);
+                console.log(rand)
+                if(rand == 1){ return "rock" }
+                else if(rand == 2){ return "paper"}
+                else { return "scissors" }
+            };
+            let userScore = 0;
+            let compScore = 0;
+            let result;
+            
+            function compare(user, comp){
+                    function won(){
+                        userScore++;
+                        return result = "You won! " + user.charAt(0).toUpperCase() + user.substring(1) + " beats " + comp.charAt(0).toUpperCase() + comp.substring(1)+".";
+                    }
+                    
+                    if(user == comp){
+                        return result = "It's a Draw!"
+                    }
+                    else if (user == "paper" && comp=="rock"){        
+                        won();
+                    }
+                    else if (user == "rock" && comp=="scissors"){  
+                        won();
+                    }
+                    else if (user == "scissors" && comp=="paper"){
+                        won();
+                    }
+                    else {
+                        compScore++;
+                        return result = "You lost! " + comp.charAt(0).toUpperCase() + comp.substring(1) + " beats " + user.charAt(0).toUpperCase() + user.substring(1)+".";
+                    }
+                    
+            }
+            function playRound(){
+                let comp = computerPlay();
+                let user = playerSelection();
+                compare(user, comp);
+            }
+            function game(){
+                clearLog();
+                let message;
+                let node1 = document.createElement('DIV');
+                for (i = 0; i < ROUNDS; i++){
+                    playRound();
+                    console.log(result);
+                    
+                    let node2 = document.createElement('P');
+                    let log = document.querySelector(".log");
+                    let textnode = document.createTextNode(result);
+                    node2.appendChild(textnode);   
+                    log.appendChild(node1);
+                    node1.appendChild(node2);
+                }
+                let finalRes = userScore - compScore;
+                console.log("final " + finalRes);
+                if(finalRes == 0){
+                    message = "It's a draw!"
+                }
+                else if(finalRes > 0){
+                    message = "You won! ";
+                }
+                else {
+                    message = "You lost! ";
+                }
+                console.log("FINAL RESULT: " + message);
+                updateContent(message, userScore, compScore);
+                userScore = 0;
+                compScore = 0;
+                
+            }
+            function clearLog(){
+                let elem = document.querySelector('.log > div');
+                if(elem){
+                    elem.remove();
+                }                
+            }
+            document.getElementById('play').onclick = function(){
+                game();
+            }
+            function updateContent(message, userScore, compScore){
+                txt = document.querySelector('.final');
+                txt.textContent = "Final result: " + message;
+
+                usr = document.querySelector(".userScore");
+                comp = document.querySelector(".compScore");
+                usr.textContent = userScore;
+                comp.textContent = compScore;
+            }     
+        </script>
+    </body>
+</html>
