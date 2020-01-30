@@ -16,10 +16,20 @@
             tr:last-child > td{
                 border: solid 1px black;
             } 
+            .selection{
+                display: none;
+            }
+            
         </style>
         <div>
             <h2>Rock, Paper, Scissors</h2>
             <button id="play">Play</button>
+            <div class="selection">
+                <button id="rock" value="rock">Rock</button>
+                <button id="paper" value="paper">Paper</button>
+                <button id="scissors" value="scissors">Scissors</button>
+            </div>
+            <button id="reset">Reset</button>
             <table>
                 <tr>
                     <td>User Score</td>
@@ -42,17 +52,11 @@
         
         <script>
             
-            const ROUNDS = 3;
-            function playerSelection(){
-                let res;
-                while(true){
-                    res = prompt("Pick one: rock, paper, scissors", '').toLowerCase();
-                    if (res == "rock" || res =="paper" || res=="scissors"){
-                        return res;
-                        break;
-                    }
-                    else{ alert("invalid: try again")}
-                }
+            let ROUNDS;
+            function playerSelection(user){
+                
+                return user;
+                
             }
             
             function computerPlay(){
@@ -91,17 +95,17 @@
                     }
                     
             }
-            function playRound(){
+            function playRound(userChoice){
                 let comp = computerPlay();
-                let user = playerSelection();
+                let user = userChoice;
                 compare(user, comp);
             }
-            function game(){
-                clearLog();
+            function game(userChoice){
+                
                 let message;
                 let node1 = document.createElement('DIV');
-                for (i = 0; i < ROUNDS; i++){
-                    playRound();
+                
+                    playRound(userChoice);
                     console.log(result);
                     
                     let node2 = document.createElement('P');
@@ -110,36 +114,63 @@
                     node2.appendChild(textnode);   
                     log.appendChild(node1);
                     node1.appendChild(node2);
-                }
-                let finalRes = userScore - compScore;
-                console.log("final " + finalRes);
-                if(finalRes == 0){
-                    message = "It's a draw!"
-                }
-                else if(finalRes > 0){
+                let reset = document.querySelector("#reset");
+                reset.addEventListener("click", () => {
+                        userScore = 0;
+                        compScore = 0;
+                        updateContent('', userScore, compScore);
+                        clearLog();
+                    });
+                if(userScore == ROUNDS){
                     message = "You won! ";
+                    document.querySelector(".selection").style.display = "none";
                 }
-                else {
+
+                else if(compScore == ROUNDS){
                     message = "You lost! ";
+                    document.querySelector(".selection").style.display = "none";
                 }
-                console.log("FINAL RESULT: " + message);
                 updateContent(message, userScore, compScore);
-                userScore = 0;
-                compScore = 0;
+                
                 
             }
             function clearLog(){
-                let elem = document.querySelector('.log > div');
+                let elem = document.querySelectorAll('.log > div');
                 if(elem){
-                    elem.remove();
+                    for (let each of elem){
+                        each.remove();
+                    }
                 }                
             }
+           
             document.getElementById('play').onclick = function(){
-                game();
+                document.querySelector(".selection").style.display = "block";
+                ROUNDS = prompt("Score to win?");
+                userScore = 0;
+                compScore = 0;
+                updateContent('', userScore, compScore);
+                clearLog();
+                
+            }
+            let select = document.querySelectorAll(".selection");
+            let userChoice;
+            for (let choice of select){
+                choice.addEventListener("click", (e) =>{
+                    userChoice = e.target.value;
+                    playerSelection(userChoice);
+                    game(userChoice);
+                });
             }
             function updateContent(message, userScore, compScore){
                 txt = document.querySelector('.final');
-                txt.textContent = "Final result: " + message;
+                if(message === undefined){
+                    console.log("inside undefined")
+                    txt.textContent = "Final result: ";
+                }
+                else{
+                    txt.textContent = "Final result: " + message;
+                }
+                
 
                 usr = document.querySelector(".userScore");
                 comp = document.querySelector(".compScore");
